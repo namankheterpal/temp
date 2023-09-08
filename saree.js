@@ -182,7 +182,7 @@ function capitalize(str) {
   return firstLetter + strWithoutFirstChar;
 }
 
-const NGROK = "https://b378-3-248-173-223.ngrok-free.app/SHOPDROP";
+const NGROK = "https://raw.githubusercontent.com/namankheterpal/temp/main/SHOPDROP";
 
 const imgNames = {
   4510: {
@@ -1277,33 +1277,43 @@ const imgNames = {
 
 const excelRow = [];
 
-data.slice(4, 8).forEach((item) => {
+data.slice(11,data.length-1).forEach((item) => {
+  const row = Row();
+  row.Title = item.filename.split(" ").map(capitalize).join(" ");
+  const Handle = row.Title.toLowerCase().split(' ').join('-');
+
+  row.Handle = Handle
+
+  row.Published = "true";
+  row.Vendor = "ZeroSaree";
+  row.Status = "active";
+  row["Option1 Name"] = "Color";
+  row["Gift Card"] = "false";
+  excelRow.push(row);
   Object.keys(imgNames[item.filename]).forEach((variant) => {
     const images = imgNames[item.filename][variant];
 
-    images.slice(0,1).forEach((imageName) => {
+    images.forEach((imageName,i) => {
       const row = Row();
-
       const imgSrc = new URL(
         NGROK + "/" + item.filename +"="+item.price+ "/" + imageName
       ).toString();
 
-      row.Title = item.filename.split(" ").map(capitalize).join(" ");
-      row["Variant Price"] = +item.price + 800;
-      row["Variant Compare At Price"] = +item.price + 1400;
-      row["Variant Image"] = imgSrc;
+      if(i==0){console.log(i)
+        row["Variant Price"] = +item.price + 800;
+        row["Variant Compare At Price"] = +item.price + 1400;
+        row["Variant Image"] = imgSrc;
+        row["Variant SKU"] = item.filename.split(" ").join("");
+        row["Option1 Value"] = variant;
+        row["Variant Fulfillment Service"] = "manual";
+        row["Variant Inventory Policy"] = "continue";
+        row["Variant Inventory Qty"] = 100;
+      }
+     
+      
+      row.Handle = Handle
       row["Image Src"] = imgSrc;
-      row["Variant SKU"] = item.filename.split(" ").join("");
-      row["Option1 Value"] = variant;
-
-      row.Published = "true";
-      row.Vendor = "ZeroSaree";
-      row.Status = "active";
-      row["Variant Fulfillment Service"] = "manual";
-      row["Variant Inventory Policy"] = "continue";
-      row["Variant Inventory Qty"] = 100;
-      row["Option1 Name"] = "Color";
-
+      
       excelRow.push(row);
     });
   });
